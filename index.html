@@ -9,10 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <style>
-        body {
+        /* Ensure the footer stays at the bottom */
+        body, html {
+            height: 100%;
             margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content {
+            flex: 1;
+        }
+
+        footer {
+            background-color: #343a40; /* Dark background */
+            color: white; /* White text */
+            text-align: center;
+            padding: 1rem;
         }
     </style>
 </head>
@@ -23,42 +36,36 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="content container">
         <div class="form-group p-2">
             <label for="Search"><h2>Enter item to buy</h2></label>
             <input type="text" class="form-control" id="Search" placeholder="Dark oak wood...">
         </div>
-    </div>
-    
-    <div class="container">
+        
         <ul id="results" class="list-group p-2"></ul>
     </div>
 
-    <footer class="position-absolute bottom-0 start-50 w-100 translate-middle text-center text-lg-start text-white">
-        <div class="text-center p-3 bg-dark">
-            © 2024 Copyright:
-            <a class="text-white" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.txt">KaiyWhiteSnow & ArdynFall SMP</a>
+    <footer>
+        <div class="container">
+            <p class="mb-0">&copy; 2024 Copyright: <a class="text-white" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.txt">ArdynFallSMP & KaiyWhiteSnow.</a></p>
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.min.js"></script> <!-- Loading Fuse.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.min.js"></script>
     <script>
         let fuse; 
         const resultsList = document.getElementById("results");
         const searchInput = document.getElementById("Search");
 
-        // Fetch the items from the JSON file
         fetch("/src/json/items.json")
             .then(response => response.json())
             .then(data => {
-                // Initialize Fuse with loaded data
                 const fuseOptions = {
                     keys: ["name", "source"],
-                    threshold: 0.3 // Adjusts how fuzzy the search is
+                    threshold: 0.3
                 };
                 fuse = new Fuse(data, fuseOptions);
 
-                // Add event listener for search input
                 searchInput.addEventListener("input", () => {
                     const searchPattern = searchInput.value;
                     const results = fuse.search(searchPattern);
@@ -70,7 +77,6 @@
                 resultsList.innerHTML = "<li class='list-group-item'>Error loading items.</li>";
             });
 
-        // Function to display search results
         function displayResults(results) {
             resultsList.innerHTML = "";
             
